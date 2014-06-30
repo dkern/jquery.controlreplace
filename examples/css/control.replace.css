@@ -1,0 +1,27 @@
+/* control box */
+div.control                                { height: 25px; position: relative; }
+
+/* checkbox replacement */
+div.checkbox_replace                       { width: 22px; height: 22px; background: transparent url("../images/checkbox.png") no-repeat; z-index: 1000; position: relative; }
+div.checkbox_replace:hover                 { cursor: pointer; }
+div.checkbox_replace.active                { background-position: left -22px; }
+
+/* radio replace */
+div.radio_replace                          { width: 21px; height: 21px; background: transparent url("../images/radio.png") no-repeat; z-index: 1000; position: relative; }
+div.radio_replace:hover                    { cursor: pointer; }
+div.radio_replace.active                   { background-position: left -21px; }
+
+/* select replace */
+div.select_replace                         { position: relative; }
+div.select_replace input                   { width: 270px; height: 36px; color: #333; background: #eee url("../images/select.png") no-repeat 292px 50%; border: 2px solid #c6c6c6; padding: 0 40px 0 10px; font-size: 14px; margin-bottom: 20px; display: block; }
+div.select_replace input                   { -moz-user-select: none; -khtml-user-select: none; -webkit-user-select: none; -o-user-select: none; }
+div.select_replace input:hover             { border-color: #009ee0; cursor: pointer; }
+div.select_replace.open input              { border-color: #009ee0; }
+
+/* select replace - option list */
+div.select_replace div.list_container      { width: 320px; display: none; position: absolute; top: 36px; left: 0; background: #f9f9f9; border: 2px solid #009ee0; z-index: 5500; }
+div.select_replace.open div.list_container { display: block; }
+div.select_replace div ul                  { list-style: none; margin: 0; padding: 0; }
+div.select_replace div ul li               { padding: 0 10px; line-height: 38px; font-size: 14px; }
+div.select_replace div ul li:hover         { background-color: #dbdbdb; cursor: pointer; }
+div.select_replace div ul li.selected      { font-weight: bold; }

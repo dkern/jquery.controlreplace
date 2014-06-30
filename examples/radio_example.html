@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>controlReplace|inputReplace Example</title>
+<link rel="stylesheet" type="text/css" href="css/control.replace.css" media="all" />
+<link rel="stylesheet" type="text/css" href="css/examples.css" media="all" />
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.js"></script>
+<script type="text/javascript" src="../jquery.control.replace.js"></script>
+<script type="text/javascript">
+jQuery(document).ready(function()
+{
+	jQuery("input.group2").controlReplace();
+
+	jQuery("input.group3").controlReplace(
+    {
+        additionalClass: "my-class",
+        onChange: function(name, newValue)
+        {
+            console.log(name + ": " + newValue);
+        },
+        inputCss:
+        {
+            position: "absolute",
+            top: 2,
+            left: 2
+        }
+    });
+});
+</script>
+</head>
+
+<body>
+  <form name="example" method="post" action="#">
+    <h1>Radio</h1>
+    <h2>Setup</h2>
+    <p class="no-margin">Easiest way is to put inputs in an extra div-element. Inputs needs at least an 'id' to be replaced.</p>
+    <p>If an label is associated with the element the 'click' Event will be redirect to the replaced one.</p>
+    <div class="control">
+      <input id="g1ex1" name="group1" type="radio" class="group1" value="ex1" />
+      <label for="g1ex1">Element Label 1</label>
+    </div>
+    <div class="control">
+      <input id="g1ex2" name="group1" type="radio" class="group1" value="ex2" checked="checked" />
+      <label for="g1ex2">Element Label 2</label>
+    </div>
+    <div class="control">
+      <input id="g1ex3" name="group1" type="radio" class="group1" value="ex2" />
+      <label for="g1ex3">Element Label 3</label>
+    </div>
+
+
+    <h2>Basic Replace</h2>
+    <p class="code">jQuery(&quot;input.group2&quot;).controlReplace();</p>
+    <div class="control">
+      <input id="g2ex1" name="group2" type="radio" class="group2" value="ex1" />
+      <label for="g2ex1">Element Label 1</label>
+    </div>
+    <div class="control">
+      <input id="g2ex2" name="group2" type="radio" class="group2" value="ex2" checked="checked" />
+      <label for="g2ex2">Element Label 2</label>
+    </div>
+    <div class="control">
+      <input id="g2ex3" name="group2" type="radio" class="group2" value="ex2" />
+      <label for="g2ex3">Element Label 3</label>
+    </div>
+
+
+    <h2>Full Replace</h2>
+    <p>Check your console output!</p>
+    <p class="code no-margin">jQuery("input.group3").controlReplace(</p>
+    <p class="code no-margin">{</p>
+    <p class="code no-margin">&nbsp;&nbsp;&nbsp;&nbsp;additionalClass: "my-class",</p>
+    <p class="code no-margin">&nbsp;&nbsp;&nbsp;&nbsp;onChange: function(name, newValue)</p>
+    <p class="code no-margin">&nbsp;&nbsp;&nbsp;&nbsp;{</p>
+    <p class="code no-margin">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log(name + ": " + newValue);</p>
+    <p class="code no-margin">&nbsp;&nbsp;&nbsp;&nbsp;},</p>
+    <p class="code no-margin">&nbsp;&nbsp;&nbsp;&nbsp;inputCss:</p>
+    <p class="code no-margin">&nbsp;&nbsp;&nbsp;&nbsp;{</p>
+    <p class="code no-margin">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;position: "absolute", </p>
+    <p class="code no-margin">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;top: 2,</p>
+    <p class="code no-margin">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;left: 2</p>
+    <p class="code no-margin">&nbsp;&nbsp;&nbsp;&nbsp;}</p>
+    <p>});</p>
+    <div class="control">
+      <input id="g3ex1" name="group3" type="radio" class="group3" value="ex1" />
+      <label for="g3ex1">Element Label 1</label>
+    </div>
+    <div class="control">
+      <input id="g3ex2" name="group3" type="radio" class="group3" value="ex2" checked="checked" />
+      <label for="g3ex2">Element Label 2</label>
+    </div>
+    <div class="control">
+      <input id="g3ex3" name="group3" type="radio" class="group3" value="ex2" />
+      <label for="g3ex3">Element Label 3</label>
+    </div>
+
+
+    <h2>Options</h2>
+    <h3>additionalClass</h3>
+    <p class="no-margin">Adds one or more additional css classes to the replacement element.</p>
+    <p class="code">jQuery(&quot;input&quot;).controlReplace({additionalClass: "my-class"});</p>
+
+    <h3>onChange</h3>
+    <p class="no-margin">A callback function; will be thrown on value change.</p>
+    <p class="code">jQuery(&quot;input&quot;).controlReplace({onChange: function(name, newValue) { console.log(name + ": " + newValue); }});</p>
+
+    <h3>inputCss</h3>
+    <p class="no-margin">Set css style options to the original element.</p>
+    <p class="code">jQuery(&quot;input&quot;).controlReplace({inputCss: {position: "absolute", top: 2, left: 2}});</p>
+  </form>
+</body>
+</html>
