@@ -1,5 +1,5 @@
 /*!
- * jQuery Control/Input Replace - v0.1.0
+ * jQuery Control/Input Replace - v0.1.1
  * http://jquery.eisbehr.de/
  * http://eisbehr.de
  *
@@ -88,7 +88,7 @@
                     {
                         $("div[data-name='" + replace.attr("data-name") + "']").removeClass("active");
                         $("input[type='radio'][name='" + replace.attr("data-name") + "']").removeAttr("checked");
-                        $("input[type='radio'][name='" + replace.attr("data-name") + "'][value='" + replace.attr("data-value") + "']").attr("checked", "checked").click();
+                        $("input[type='radio'][name='" + replace.attr("data-name") + "'][value='" + replace.attr("data-value") + "']").prop("checked", true).click();
                         $("input[type='hidden'][name='" + replace.attr("data-name") + "']").val(replace.attr("data-value"));
                         replace.addClass("active");
 
