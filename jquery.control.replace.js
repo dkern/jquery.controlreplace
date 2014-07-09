@@ -1,5 +1,5 @@
 /*!
- * jQuery Control/Input Replace - v0.1.1
+ * jQuery Control/Input Replace - v0.1.2
  * http://jquery.eisbehr.de/
  * http://eisbehr.de
  *
@@ -118,7 +118,7 @@
                 var list = element.next().children("div").children("ul");
                 element.children("option").each(function()
                 {
-                    list.append("<li " + (this.selected ? " class='selected'" : "") + " data-value='" + $(this).val() + "'>" + $(this).text() + "</li>");
+                    list.append('<li class="' + $(this).attr("class") + (this.selected ? ' selected' : '') + '" data-value="' + $(this).val() + '">' + $(this).text() + '</li>');
                 });
 
                 // make input not selectable
