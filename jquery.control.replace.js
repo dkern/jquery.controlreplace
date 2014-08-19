@@ -1,5 +1,5 @@
 /*!
- * jQuery Control/Input Replace - v0.1.2
+ * jQuery Control/Input Replace - v0.1.3
  * http://jquery.eisbehr.de/
  * http://eisbehr.de
  *
@@ -41,6 +41,10 @@
         // loop all items
         $(items).each(function()
         {
+            // ignore elements without an id
+            if( typeof $(this).attr("id") === "undefined" )
+                return;
+
             var element = $(this),
                 tag     = this.tagName.toLowerCase(),
                 type    = element.attr("type"),
