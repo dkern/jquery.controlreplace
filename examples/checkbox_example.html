@@ -2,25 +2,24 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>controlReplace|inputReplace Example</title>
+<title>controlReplace Checkbox Example</title>
 <link rel="stylesheet" type="text/css" href="css/control.replace.css" media="all" />
 <link rel="stylesheet" type="text/css" href="css/examples.css" media="all" />
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.js"></script>
 <script type="text/javascript" src="../jquery.control.replace.js"></script>
 <script type="text/javascript">
-jQuery(document).ready(function()
-{
-    jQuery("input.group2").controlReplace();
+jQuery(function($) {
+    $("input.group2").controlReplace();
 
-    jQuery("input.group3").controlReplace(
-    {
+    $("input.group3").controlReplace({
         additionalClass: "my-class",
-        onChange: function(name, newValue)
-        {
+        afterReplace: function(element) {
+            console.log("replaced: " + element.attr("name"));
+        },
+        onChange: function(name, newValue) {
             console.log(name + ": " + newValue);
         },
-        inputCss:
-        {
+        inputCss: {
             position: "absolute", 
             top: 2, 
             left: 2
@@ -51,7 +50,7 @@ jQuery(document).ready(function()
 
 
     <h2>Basic Replace</h2>
-    <p class="code">jQuery(&quot;input.group2&quot;).controlReplace();</p>
+    <p class="code">$(&quot;input.group2&quot;).controlReplace();</p>
     <div class="control">
       <input id="g2ex1" name="group2_input1" type="checkbox" class="group2" value="ex1" />
       <label for="g2ex1">Element Label 1</label>
@@ -68,15 +67,15 @@ jQuery(document).ready(function()
 
     <h2>Full Replace</h2>
     <p>Check your console output!</p>
-    <p class="code no-margin">jQuery("input.group3").controlReplace(</p>
-    <p class="code no-margin">{</p>
+    <p class="code no-margin">$("input.group3").controlReplace({</p>
     <p class="code no-margin">&nbsp;&nbsp;&nbsp;&nbsp;additionalClass: "my-class",</p>
-    <p class="code no-margin">&nbsp;&nbsp;&nbsp;&nbsp;onChange: function(name, newValue)</p>
-    <p class="code no-margin">&nbsp;&nbsp;&nbsp;&nbsp;{</p>
+    <p class="code no-margin">&nbsp;&nbsp;&nbsp;&nbsp;afterReplace: function(element) {</p>
+    <p class="code no-margin">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log("replaced: " + element.attr("name"));</p>
+    <p class="code no-margin">&nbsp;&nbsp;&nbsp;&nbsp;},</p>
+    <p class="code no-margin">&nbsp;&nbsp;&nbsp;&nbsp;onChange: function(name, newValue) {</p>
     <p class="code no-margin">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log(name + ": " + newValue);</p>
     <p class="code no-margin">&nbsp;&nbsp;&nbsp;&nbsp;},</p>
-    <p class="code no-margin">&nbsp;&nbsp;&nbsp;&nbsp;inputCss:</p>
-    <p class="code no-margin">&nbsp;&nbsp;&nbsp;&nbsp;{</p>
+    <p class="code no-margin">&nbsp;&nbsp;&nbsp;&nbsp;inputCss: {</p>
     <p class="code no-margin">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;position: "absolute", </p>
     <p class="code no-margin">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;top: 2,</p>
     <p class="code no-margin">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;left: 2</p>
@@ -99,15 +98,19 @@ jQuery(document).ready(function()
     <h2>Options</h2>
     <h3>additionalClass</h3>
     <p class="no-margin">Adds one or more additional css classes to the replacement element.</p>
-    <p class="code">jQuery(&quot;input&quot;).controlReplace({additionalClass: "my-class"});</p>
+    <p class="code">$(&quot;input&quot;).controlReplace({additionalClass: "my-class"});</p>
+
+    <h3>afterReplace</h3>
+    <p class="no-margin">A callback function; will be thrown after input has been replaced.</p>
+    <p class="code">$(&quot;input&quot;).controlReplace({afterReplace: function(element) { console.log("replaced: " + element.attr("name")); }});</p>
 
     <h3>onChange</h3>
     <p class="no-margin">A callback function; will be thrown on value change.</p>
-    <p class="code">jQuery(&quot;input&quot;).controlReplace({onChange: function(name, newValue) { console.log(name + ": " + newValue); }});</p>
+    <p class="code">$(&quot;input&quot;).controlReplace({onChange: function(name, newValue) { console.log(name + ": " + newValue); }});</p>
 
     <h3>inputCss</h3>
     <p class="no-margin">Set css style options to the original element.</p>
-    <p class="code">jQuery(&quot;input&quot;).controlReplace({inputCss: {position: "absolute", top: 2, left: 2}});</p>
+    <p class="code">$(&quot;input&quot;).controlReplace({inputCss: {position: "absolute", top: 2, left: 2}});</p>
   </form>
 </body>
 </html>

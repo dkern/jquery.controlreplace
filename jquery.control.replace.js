@@ -1,31 +1,26 @@
 /*!
- * jQuery Control/Input Replace - v0.1.3
+ * jQuery Control Replace - v0.3.2
  * http://jquery.eisbehr.de/
- * http://eisbehr.de
  *
- * Copyright 2014, Daniel 'Eisbehr' Kern
+ * Copyright 2016, Daniel 'Eisbehr' Kern
  *
  * Dual licensed under the MIT and GPL v2 licenses:
  * http://www.opensource.org/licenses/mit-license.php
  * http://www.gnu.org/licenses/gpl-2.0.html
  *
- * jQuery("input").controlReplace();
- * jQuery("input").inputReplace();
+ * $("input").controlReplace();
  */
-(function($, window, document, undefined)
-{
-    $.fn.controlReplace = function(settings)
-    {
+;(function($, document, undefined) {
+    $.fn.controlReplace = function(settings) {
         /**
          * settings and configuration data
-         * @var array
+         * @var {object}
          */
-        var configuration =
-        {
+        var configuration = {
             additionalClass: null,
             onChange: null,
-            inputCss:
-            {
+            afterReplace: null,
+            inputCss: {
                 position: "absolute",
                 top: 2,
                 left: 2
@@ -39,141 +34,174 @@
         var items = this;
 
         // loop all items
-        $(items).each(function()
-        {
-            // ignore elements without an id
-            if( typeof $(this).attr("id") === "undefined" )
-                return;
-
+        $(items).each(function() {
             var element = $(this),
-                tag     = this.tagName.toLowerCase(),
+                tag     = element.prop("tagName").toLowerCase(),
                 type    = element.attr("type"),
                 id      = element.attr("id").replace(".", ""),
                 name    = element.attr("name"),
                 value   = element.val();
 
-            // skip elements without id
-            if( id == undefined || $.trim(id) == "" ) return;
+            // ignore elements without an id
+            if( typeof element.attr("id") === "undefined" || $.trim(id) == "" )
+                return;
 
             // handle 'inputs' of type 'checkbox' and 'radio'
-            if( tag == "input" && (type == "checkbox" || type == 'radio') && element.attr("data-replaced") != "true" )
-            {
+            if( tag == "input" && (type == "checkbox" || type == 'radio') && !element.data("replaced") ) {
                 // create replacement element
-                $(this).after("<div class=\"" + type + "_replace " + configuration.additionalClass + "\" data-id=\"" + id + "\" data-name=\"" + name + "\" data-type=\"" + type + "\" data-value=\"" + value + "\"></div>");
+                $("<div />", {class: type + "_replace", data: {id: id, name: name, type: type, value: value}})
+                .attr("data-id", id)
+                .attr("data-name", name)
+                .addClass(configuration.additionalClass)
+                .insertAfter(element);
 
                 // pass checked state to new elements
-                if( $(this).attr("checked") )
-                    $(this).next().addClass("active");
+                if( element.prop("checked") )
+                    element.next().addClass("active");
 
-                // set additional css to original element
-                $(this).attr("data-replaced", "true").css(configuration.inputCss).click(function() { return false });
+                // set additional css to original element and prevent click on original
+                element.data("replaced", true)
+                       .css(configuration.inputCss)
+                       .click(function(e) {
+                           e.preventDefault();
+                           return false
+                       })
 
-                // set click event
-                $(this).next().click(function()
-                {
-                    var replace = $(this);
-                    var type = replace.attr("data-type");
+                // set click event on replace
+                .next().click(function() {
+                    var replace = $(this),
+                        type = replace.data("type");
 
-                    if( type == "checkbox" )
-                    {
-                        if( replace.hasClass("active") )
-                        {
-                            replace.removeClass("active").prev().attr("checked", false);
-                            if( configuration.onChange ) configuration.onChange(replace.attr("data-name"), null);
+                    if( type == "checkbox" ) {
+                        if( replace.hasClass("active") ) {
+                            replace.removeClass("active").prev().removeAttr("checked").prop("checked", false).change();
+                            if( configuration.onChange ) configuration.onChange(replace.data("name"), null);
                         }
-                        else
-                        {
-                            replace.addClass("active").prev().attr("checked", true);
-                            if( configuration.onChange ) configuration.onChange(replace.attr("data-name"), replace.attr("data-value"));
+                        else {
+                            replace.addClass("active").prev().attr("checked", "checked").prop("checked", true).change();
+                            if( configuration.onChange ) configuration.onChange(replace.data("name"), replace.data("value"));
                         }
                     }
 
-                    else if( type == "radio" )
-                    {
-                        $("div[data-name='" + replace.attr("data-name") + "']").removeClass("active");
-                        $("input[type='radio'][name='" + replace.attr("data-name") + "']").removeAttr("checked");
-                        $("input[type='radio'][name='" + replace.attr("data-name") + "'][value='" + replace.attr("data-value") + "']").prop("checked", true).click();
-                        $("input[type='hidden'][name='" + replace.attr("data-name") + "']").val(replace.attr("data-value"));
-                        replace.addClass("active");
+                    else if( type == "radio" ) {
+                        $("div[data-name='" + replace.data("name") + "']").removeClass("active");
+                        $("input[type='radio'][name='" + replace.data("name") + "']").removeAttr("checked");
+                        $("input[type='radio'][name='" + replace.data("name") + "'][value='" + replace.data("value") + "']").attr("checked", "checked").prop("checked", true).click();
+                        //$("input[type='hidden'][name='" + replace.data("name") + "']").val(replace.data("value"));
 
-                        if( configuration.onChange ) configuration.onChange(replace.attr("data-name"), replace.attr("data-value"));
+                        replace.addClass("active");
+                        if( configuration.onChange ) configuration.onChange(replace.data("name"), replace.data("value"));
                     }
                 });
 
                 // redirect label click event
-                $("label[for='" + id + "']").click(function()
-                {
+                $("label[for='" + id + "']").click(function() {
                     $("div[data-id='" + $(this).attr("for") + "']").click();
                 });
+
+                if( configuration.afterReplace )
+                    configuration.afterReplace(element);
             }
 
             // handle 'select'
-            else if( tag == "select" && element.attr("multiple") != "multiple" )
-            {
-                var  text = element.children("option:selected").text();
+            else if( tag == "select" && !element.prop("multiple") && element.attr("multiple") != "multiple" ) {
+                // remove select from view
                 element.hide();
 
+                // get actual selected text
+                var selectedText = element.find("option:selected").text();
+
                 // create replacement elements
-                element.after("<div class='select_replace " + name + " " + configuration.additionalClass + "' data-id='" + id + "' data-name='" + name + "'></div>");
-                element.next().append("<input id='replaced_" + id + "' name='replaced_" + id + "' type='text' value='" + text + "' readonly='readonly' class='required-entry no-blur' />");
-                element.next().append("<div class='list_container'><ul></ul></div>");
+                var replace = $("<div/>", {"class": "select_replace " + name, data: {id: id, name: name}}).addClass(configuration.additionalClass).insertAfter(element);
+                var input = $("<input/>", {id: "replaced_" + id, name: "replaced_" + id, type: "text", value: selectedText, readonly: "readonly", "class": "required-entry no-blur"}).appendTo(replace);
+                var listContainer = $("<div><ul/></div>").addClass("list_container").appendTo(replace);
+
+                // transfer disabled state
+                if( element.prop("disabled") )
+                    input.attr("disabled", "disabled").addClass("disabled");
 
                 // create value list
-                var list = element.next().children("div").children("ul");
-                element.children("option").each(function()
-                {
-                    list.append('<li class="' + $(this).attr("class") + (this.selected ? ' selected' : '') + '" data-value="' + $(this).val() + '">' + $(this).text() + '</li>');
+                var list = $("ul", listContainer);
+                element.find("option").each(function() {
+                    var option = $(this);
+                    $("<li/>", {"class": (option.attr("class") ? option.attr("class") : "") + (option.prop("selected") ? " selected" : ""), html: option.text(), data: {value: option.val()}})
+                    .attr("data-value", option.val())
+                    .appendTo(list);
                 });
 
                 // make input not selectable
-                var select = element.next().children("input");
-                select.on("selectstart focus", function(e)
-                {
-                    select.blur();
+                input.on("selectstart focus", function(e) {
+                    input.blur();
                     e.preventDefault();
 
                     return false;
                 });
-
+                
                 // register open list event
-                select.click(function(e)
-                {
-                    var state = select.parent().hasClass("open");
+                input.click(function() {
+                    // ignore on disabled
+                    if( input.prop("disabled") )
+                        return;
+
+                    var parent = input.parent(),
+                        state = parent.hasClass("open");
 
                     // close all selects
                     $("div.select_replace").removeClass("open");
 
                     // open specific one
-                    if( !state )
-                        select.parent().addClass("open");
+                    if( !state ) {
+                        parent.addClass("open");
+
+                        // hide on hit esc key
+                        $(document).on("keyup.control_replace_select", function(e) {
+                            if( e.keyCode == 27 ) {
+                                parent.removeClass("open");
+                                $(document).off("control_replace_select");
+                            }
+                        })
+
+                        // hide on click outside select
+                        .on("click.control_replace_select", function(e) {
+                            if( !parent.is(e.target) && parent.has(e.target).length === 0 ) {
+                                parent.removeClass("open");
+                                $(document).off("control_replace_select");
+                            }
+                        });
+                    }
                 });
 
                 // register option select event
-                list.children("li").click(function(e)
-                {
+                list.find("li").click(function() {
+                    var entry = $(this);
+
                     // close all selects
                     $("div.select_replace").removeClass("open");
+                    $(document).off("control_replace_select");
 
                     // set value to hidden
-                    var hidden = $("input[id=\"" + id + "\"]")
-                    hidden.val($(this).attr("data-value"));
-                    select.val($(this).text())
+                    var hidden = $("input[id=\"" + id + "\"]");
+                    hidden.val(entry.attr("data-value"));
+                    input.val(entry.text());
+                    element.val(entry.data("value"));
 
                     // update selected entry in list
-                    $(this).parent().children("li").removeClass("selected");
-                    $(this).addClass("selected");
+                    entry.parent().find("li").removeClass("selected");
+                    entry.addClass("selected");
 
                     // trigger on change event if available
                     if( configuration.onChange ) configuration.onChange(hidden);
-                    select.change();
+                    input.change();
+                    hidden.change();
                 });
 
                 // remove select and make it a hidden field
-                element.replaceWith("<input id='" + id + "' name='" + name + "' type='hidden' value='" + value + "' />");
+                element.replaceWith($("<input />", {id: id, name: name, type: "hidden", value: value}));
+                element = $("#" + id);
+
+                if( configuration.afterReplace )
+                    configuration.afterReplace(replace, element);
             }
         });
     };
-
-    // other names to call
-    $.fn.inputReplace = $.fn.controlReplace;
-})(jQuery, window, document);
+})(jQuery, document);
